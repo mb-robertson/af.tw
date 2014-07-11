@@ -1,0 +1,40 @@
+bin
+.metadata
+
+# Compiled files
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# Eclipse Files
+.classpath
+.project
+.settings
+
+# Maven Build Output
+target/
+test-output/
+
+# vi artifacts
+*.swp
+
+# Local Files
+noinclude/
+
+# xtend Generated Sources
+src/main/generated-sources
+src/test/generated-sources
+src/main/xtend-gen
+src/test/xtend-gen
+
+# jnario generated files
+doc-gen
+
+# Browser Specific files
+res/browsers/
+
+# Experiments: in the z package / resource folder
+z/
