@@ -11,17 +11,33 @@ import org.reflections.util.ConfigurationBuilder
 import org.reflections.scanners.ResourcesScanner
 import org.reflections.util.ClasspathHelper
 import static extension org.apache.commons.io.FileUtils.*
+import java.util.Set
 
 /**
+ * @MONO_STATE
  * Handles common I/O tasks from a centralized class
  */
 class FileHelper {
-	static val LOG = LoggerFactory.getLogger(FileHelper)
-	static val RESOURCES = new Reflections(
-		new ConfigurationBuilder().setUrls(
-			ClasspathHelper.forPackage("com.af.tw")).setScanners(
-			new ResourcesScanner())).getResources(
-		Pattern.compile(".*(\\.csv|\\.conf|\\.txt|\\.xpi)"))
+	val LOG = LoggerFactory.getLogger(this.class)
+	static var Set<String> resources
+
+	static var isInitialized = false;
+
+	public new() {
+		LOG.trace("attempting to initialize {}", this.class)
+		if(!isInitialized) {
+			LOG.trace("{} was not previously initialized", this.class)
+			resources = new Reflections(
+				new ConfigurationBuilder().setUrls(
+					ClasspathHelper.forPackage("com.af.tw")).setScanners(
+					new ResourcesScanner())).getResources(
+				Pattern.compile(".*(\\.csv|\\.conf|\\.txt|\\.xpi)"))
+			isInitialized = true
+		} else {
+			LOG.trace("{} was already initialized, see the resources: {}",
+				this.class, resources)
+		}
+	}
 
 	/**
 	* FOR INTERNAL USE ONLY
@@ -29,22 +45,22 @@ class FileHelper {
 	* @Param the name of the resource file (expected to be on the classpath)
 	* @Return the URI for the named resource
 	*/
-	static package def getResourceUri(String resourceName) {
+	package def getResourceUri(String resourceName) {
 		LOG.trace("getting URI for: {}", resourceName)
 
 		//FileHelper class used as a guaranteed-to-exist reference point
-		FileHelper.getResource(resourceName).toURI
+		this.class.getResource(resourceName).toURI
 	}
 
 	/**
 	* @param the name of the resource file (expected to be on the classpath)
 	* @Return the File Located associated with that resource name
 	*/
-	static def getResourceAsFile(String resourceName) {
+	def getResourceAsFile(String resourceName) {
 
 		//ensure the file is coming from either com.inadco.acceptance or undertest 
 		LOG.trace("getting resource: {} as a file", resourceName)
-		var uri = (File.separator + RESOURCES.filter[
+		var uri = (File.separator + resources.filter[
 			it.endsWith(resourceName)].head).resourceUri
 
 		if(uri == null) {
@@ -62,7 +78,7 @@ class FileHelper {
 	* @param a File to read
 	* @return the file's contents as a list of lines
 	*/
-	static package def List<String> asList(File file) {
+	package def List<String> asList(File file) {
 		file.readLines.toList
 	}
 
@@ -70,7 +86,7 @@ class FileHelper {
 	* @param a resource to read
 	* @return the file's contents as a list of lines
 	*/
-	static def List<String> asList(String resourceName) {
+	def List<String> asList(String resourceName) {
 		resourceName.resourceAsFile.asList
 	}
 
@@ -80,7 +96,7 @@ class FileHelper {
 	* the file should have a header row and it should be tab-separated 
 	* @return the file's contents as a mapped list of lines (header-row derived)
 	*/
-	static package def List<Map<String, String>> asMapsList(File file) {
+	package def List<Map<String, String>> asMapsList(File file) {
 		LOG.trace("creating maps list from file: {} located at: {}", file.name,
 			file.canonicalPath)
 		val List<String> lines = file.asList
@@ -115,7 +131,7 @@ class FileHelper {
 	* the file should have a header row and it should be tab-separated 
 	* @return the file's contents as a mapped list of lines (header-row derived)
 	*/
-	static def List<Map<String, String>> asMapsList(String resourceName) {
+	def List<Map<String, String>> asMapsList(String resourceName) {
 		resourceName.resourceAsFile.asMapsList
 	}
 

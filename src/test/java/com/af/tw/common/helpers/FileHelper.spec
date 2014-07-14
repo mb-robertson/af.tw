@@ -5,19 +5,19 @@ import java.net.URI
 import java.util.List
 import java.util.Map
 
-import static extension com.af.tw.common.helpers.FileHelper.*
-
 describe FileHelper {
+	extension FileHelper = new FileHelper
 	val resourcesPath = "/com/af/tw/resources/"
 
 	context "when file exists"{
+
 		val fileName = "fileHelper.txt"
 		fact "resourceUri returns requested URI"{
 			val uri = (resourcesPath + fileName).resourceUri
 			uri should be URI
 			uri.toString should contain fileName
 		}
-	
+
 		fact "resourceAsFile returns requested File"{
 			val file = fileName.resourceAsFile
 			file should be File
