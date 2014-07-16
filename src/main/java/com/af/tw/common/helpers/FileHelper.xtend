@@ -22,13 +22,15 @@ class FileHelper {
 
 	static val defaultClass = FileHelper
 	static val defaultPattern = ".*(\\.csv|\\.conf|\\.txt|\\.xpi)"
+
 	static var Set<String> resources = newHashSet("")
-	static var String currentPackageName
-	static var String currentPattern
+	static var Class<?> currentClass = defaultClass
+	static var String currentPackageName = defaultClass.package.name
+	static var String currentPattern = defaultPattern
 	static var isInitialized = false;
 
 	public new() {
-		this(defaultClass, defaultPattern)
+		this(currentClass, defaultPattern)
 	}
 
 	public new(Class<?> clazz) {
@@ -65,7 +67,7 @@ class FileHelper {
 	package def getResourceUri(String resourceName) {
 		LOG.info("getting URI for: {}", resourceName)
 
-		//FileHelper class used as a guaranteed-to-exist reference point
+		//this class used as a guaranteed-to-exist reference point
 		this.class.getResource(resourceName).toURI
 	}
 
@@ -120,24 +122,6 @@ class FileHelper {
 		LOG.info("{} was found at: {}", resourceName, resourceFile.canonicalPath)
 		resourceFile
 
-	//		val targetResource = currentPackageName + File.separator + resourceName
-	//		LOG.info("target resource: {}", targetResource)
-	//		var uri = (File.separator + resources.filter [
-	//			LOG.info("current resource: {}", it)
-	//			it.endsWith(resourceName)
-	//		//			it.equals(targetResource)
-	//		].head).resourceUri
-	//
-	//		if(uri == null) {
-	//			LOG.error("no file was found for resource: {}", resourceName)
-	//			throw new IllegalArgumentException
-	//		}
-	//		val f = new File(uri)
-	//		LOG.info("{} was found at: {}", resourceName, f.canonicalPath)
-	//		f
-	}
-
-	def locateNearestResource(String resourceName) {
 	}
 
 	/**
