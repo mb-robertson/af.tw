@@ -3,7 +3,6 @@ package com.af.tw.common.helpers
 import java.util.Map
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
-import java.lang.reflect.Constructor
 
 /**
  * Helps in creating instances of objects
@@ -26,9 +25,7 @@ class InstancePopulator {
 		val stringFields = instance.class.declaredFields.filter [
 			//only non-final
 			!it.modifiers.equals(Modifier.FINAL) && (
-				//string fields
-				it.
-				type.equals(String)
+				it.type.equals(String) || it.type.equals(boolean)
 			)
 		]
 
