@@ -3,6 +3,7 @@ package com.af.tw.common.helpers
 import java.util.Map
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
+import java.lang.reflect.Constructor
 
 /**
  * Helps in creating instances of objects
@@ -57,6 +58,18 @@ class InstancePopulator {
 			}
 		]
 
+	}
+
+	/**
+	 * @param instance the instance of the object to populate
+	 * @param properties the map of properties to use for populating the instance
+	 * @return an instance of Object -- populated by the map
+	 * (it WILL need to be cast)
+	 */
+	def create(Class<?> clazz, Map<String, String> properties) {
+		var instance = clazz.getConstructor.newInstance
+		instance.populate(properties)
+		instance
 	}
 
 }
