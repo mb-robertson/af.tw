@@ -18,24 +18,41 @@ import java.util.Set
  * Handles common I/O tasks from a centralized class
  */
 class FileHelper {
-	val LOG = LoggerFactory.getLogger(this.class)
-	static var Set<String> resources
+	package val LOG = LoggerFactory.getLogger(this.class)
 
+	static val defaultClass = FileHelper
+	static val defaultPattern = ".*(\\.csv|\\.conf|\\.txt|\\.xpi)"
+	static var Set<String> resources = newHashSet("")
+	static var String currentPackageName
+	static var String currentPattern
 	static var isInitialized = false;
 
 	public new() {
-		LOG.trace("attempting to initialize {}", this.class)
-		if(!isInitialized) {
-			LOG.trace("{} was not previously initialized", this.class)
+		this(defaultClass, defaultPattern)
+	}
+
+	public new(Class<?> clazz) {
+		this(clazz, defaultPattern)
+	}
+
+	public new(Class<?> clazz, String pattern) {
+		LOG.trace("attempting to initialize {}, using path: {}, pattern: {}",
+			this.class, clazz, pattern)
+		if(!isInitialized || !clazz.package.name.equals(currentPackageName) ||
+			!pattern.equals(currentPattern)) {
+			LOG.trace("{} was not previously initialized, or is about to change",
+				this.class)
+			currentPackageName = clazz.package.name
+			currentPattern = pattern
+			resources.clear()
 			resources = new Reflections(
 				new ConfigurationBuilder().setUrls(
-					ClasspathHelper.forPackage("com.af.tw")).setScanners(
-					new ResourcesScanner())).getResources(
-				Pattern.compile(".*(\\.csv|\\.conf|\\.txt|\\.xpi)"))
+					ClasspathHelper.forPackage(clazz.package.name)).
+					setScanners(new ResourcesScanner())).getResources(
+				Pattern.compile(pattern))
 			isInitialized = true
 		} else {
-			LOG.trace("{} was already initialized, see the resources: {}",
-				this.class, resources)
+			LOG.trace("{} was already in expected state", this.class)
 		}
 	}
 
@@ -46,7 +63,7 @@ class FileHelper {
 	* @Return the URI for the named resource
 	*/
 	package def getResourceUri(String resourceName) {
-		LOG.trace("getting URI for: {}", resourceName)
+		LOG.info("getting URI for: {}", resourceName)
 
 		//FileHelper class used as a guaranteed-to-exist reference point
 		this.class.getResource(resourceName).toURI
@@ -57,20 +74,70 @@ class FileHelper {
 	* @Return the File Located associated with that resource name
 	*/
 	def getResourceAsFile(String resourceName) {
+		LOG.info("getting resource: {} as a file", resourceName)
 
-		//ensure the file is coming from either com.inadco.acceptance or undertest 
-		LOG.trace("getting resource: {} as a file", resourceName)
-		var uri = (File.separator + resources.filter[
-			it.endsWith(resourceName)].head).resourceUri
+		//Filter all resources to ones with requested resource's name
+		var candidateResources = resources.filter [
+			it.endsWith(resourceName)
+		]
 
-		if(uri == null) {
-			LOG.error("no file was found for resource: {}", resourceName)
+		if(candidateResources.empty) {
+			LOG.error("requested resource: {} was not found among: {}",
+				resourceName, resources)
 			throw new IllegalArgumentException
 		}
-		val f = new File(uri)
-		LOG.trace("{} was found at: {}", resourceName, f.canonicalPath)
 
-		f
+		//Get the resource that is closest to the currentClass
+		var pathSegments = currentPackageName.split("\\.")
+		var String foundCandidate
+
+		//		var found = false
+		while(!pathSegments.nullOrEmpty) {
+			val checkPath = pathSegments.join(File.separator)
+			pathSegments = pathSegments.take(pathSegments.length - 1)
+
+			LOG.trace("checking if a resource is at {}", checkPath, pathSegments)
+
+			foundCandidate = candidateResources.filter [
+				it.contains(checkPath)
+			].head
+			if(!foundCandidate.nullOrEmpty) {
+				pathSegments = null
+			}
+		}
+		LOG.info("foundCandidate is: {}", foundCandidate)
+
+		if(foundCandidate.equals(null)) {
+			LOG.error(
+				"requested resource: {} was not found in the resource path: {}",
+				resourceName, currentPackageName)
+			throw new IllegalArgumentException
+		}
+
+		val foundUri = (File.separator + foundCandidate).resourceUri
+
+		val resourceFile = new File(foundUri)
+		LOG.info("{} was found at: {}", resourceName, resourceFile.canonicalPath)
+		resourceFile
+
+	//		val targetResource = currentPackageName + File.separator + resourceName
+	//		LOG.info("target resource: {}", targetResource)
+	//		var uri = (File.separator + resources.filter [
+	//			LOG.info("current resource: {}", it)
+	//			it.endsWith(resourceName)
+	//		//			it.equals(targetResource)
+	//		].head).resourceUri
+	//
+	//		if(uri == null) {
+	//			LOG.error("no file was found for resource: {}", resourceName)
+	//			throw new IllegalArgumentException
+	//		}
+	//		val f = new File(uri)
+	//		LOG.info("{} was found at: {}", resourceName, f.canonicalPath)
+	//		f
+	}
+
+	def locateNearestResource(String resourceName) {
 	}
 
 	/**
@@ -97,7 +164,7 @@ class FileHelper {
 	* @return the file's contents as a mapped list of lines (header-row derived)
 	*/
 	package def List<Map<String, String>> asMapsList(File file) {
-		LOG.trace("creating maps list from file: {} located at: {}", file.name,
+		LOG.info("creating maps list from file: {} located at: {}", file.name,
 			file.canonicalPath)
 		val List<String> lines = file.asList
 		val headerRow = lines.head.replaceAll(" ", "").toLowerCase.split('\t').
@@ -113,8 +180,7 @@ class FileHelper {
 
 				//create a map: header(key), cell(value)
 				val map = new HashMap<String, String>
-				headerRow.forEach[
-					map.put(it, cell.get(headerRow.indexOf(it)))]
+				headerRow.forEach[map.put(it, cell.get(headerRow.indexOf(it)))]
 				LOG.trace("the map: {}", map)
 
 				//create an Element using the map
