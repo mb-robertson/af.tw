@@ -22,17 +22,19 @@ class InstancePopulator {
 		LOG.trace("populating an instance of: {}", instance.class.name)
 
 		//List of mapped fields in class
-		val stringFields = instance.class.declaredFields.filter [
+		val instanceFields = instance.class.declaredFields.filter [
 			//only non-final
 			!it.modifiers.equals(Modifier.FINAL) && (
-				it.type.equals(String) || it.type.equals(boolean)
+				it.type.equals(String) || it.type.equals(boolean) || it.type.equals(int) ||
+				it.type.equals(double)
 			)
 		]
 
 		//for each field, fetch the field from the map, and assign that to the field
-		stringFields.forEach [
+		instanceFields.forEach [
 			it.setAccessible(true)
-			val fName = it.name.toLowerCase
+			//			val fName = it.name.toLowerCase
+			val fName = it.name
 			val fValue = properties.get(fName)
 			if(fValue == null) {
 				LOG.error("expected property: {} was not found", fName)
@@ -41,10 +43,12 @@ class InstancePopulator {
 			}
 			//put the value into the field as the correct type
 			switch (it.type) {
-				case int:
-					it.set(instance, Integer.valueOf(fValue))
 				case boolean:
 					it.set(instance, Boolean.valueOf(fValue))
+				case int:
+					it.set(instance, Integer.valueOf(fValue))
+				case double:
+					it.set(instance, Double.valueOf(fValue))
 				case String:
 					it.set(instance, fValue)
 				default: {

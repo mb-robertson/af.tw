@@ -1,9 +1,8 @@
 package com.af.tw.resources.testclasses
 
-class FieldsBooleanOnly {
-
-	var boolean a
-	var boolean b
+class FieldsDoubleOnly {
+	var double a
+	var double b
 
 	new() {
 	}

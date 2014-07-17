@@ -2,10 +2,13 @@ package com.af.tw.common.helpers
 
 import com.af.tw.resources.testclasses.FieldsStringOnly
 import com.af.tw.resources.testclasses.FieldsBooleanOnly
+import com.af.tw.resources.testclasses.FieldsIntegerOnly
+import com.af.tw.resources.testclasses.FieldsDoubleOnly
+import com.af.tw.resources.testclasses.FieldsMixed
 
 describe InstancePopulator {
 	context "with an object"{
-		fact "when the object contains only String type properties"{
+		fact "works for objects with only String type properties"{
 			val map = newHashMap("a" -> "a from instance", "b" -> "b from instance", "c" -> "c from instance")
 			val object = new FieldsStringOnly
 			object.a should be null
@@ -17,20 +20,64 @@ describe InstancePopulator {
 			object.b should be "b from instance"
 			object.c should be "c from instance"
 		}
-		fact "when the object contains only Boolean type properties"{
+
+		fact "works for objects with only boolean type properties"{
 			val map = newHashMap("a" -> "true", "b" -> "false")
 			val object = new FieldsBooleanOnly
-			object.a should be null
-			object.b should be null
+			object.a should be false
+			object.b should be false
 			
 			subject.populate(object, map)
-			object.a should be "a from instance"
-			object.b should be "b from instance"
+			object.a should be true
+			object.b should be false
+		}
+
+		fact "works for objects with only integer type properties"{
+			val map = newHashMap("a" -> "999", "b" -> "888")
+			val object = new FieldsIntegerOnly
+			object.a should be 0
+			object.b should be 0
+			
+			subject.populate(object, map)
+			object.a should be 999
+			object.b should be 888
+		}
+
+		fact "works for objects with only double type properties"{
+			val map = newHashMap("a" -> "999", "b" -> "888")
+			val object = new FieldsDoubleOnly
+			object.a should be 0.0
+			object.b should be 0.0
+			
+			subject.populate(object, map)
+			object.a should be 999.0
+			object.b should be 888.0
+		}
+		
+		fact "works for objects with mixed types of properties"{
+			val map = newHashMap(
+				"booleanField" -> "true",
+				"integerField" -> "999",
+				"doubleField" -> "888",
+				"stringField" -> "a from instance"
+			)
+
+			val object = new FieldsMixed
+			object.booleanField should be false
+			object.integerField should be 0
+			object.doubleField should be 0.0
+			object.stringField should be null
+			
+			subject.populate(object, map)
+			object.booleanField should be true
+			object.integerField should be 999
+			object.doubleField should be 888.0
+			object.stringField should be "a from instance"
 		}
 	}
 	
 	context "with a class"{
-		fact "when the class contains only String type properties"{
+		fact "works for classes with only String type properties"{
 			val map = newHashMap("a" -> "a from class", "b" -> "b from class", "c" -> "c from class")
 
 			val object = subject.create(FieldsStringOnly, map) as FieldsStringOnly
@@ -39,13 +86,42 @@ describe InstancePopulator {
 			object.c should be "c from class"
 		}
 		
-		fact "when the class contains only Boolean type properties"{
+		fact "works for classes with only boolean type properties"{
 			val map = newHashMap("a" -> "false", "b" -> "true")
 
 			val object = subject.create(FieldsBooleanOnly, map
 			) as FieldsBooleanOnly
 			object.a should be false
 			object.b should be true
+		}
+
+		fact "works for classes with only integer type properties"{
+			val map = newHashMap("a" -> "999", "b" -> "888")
+			val object = subject.create(FieldsIntegerOnly, map) as FieldsIntegerOnly
+			object.a should be 999
+			object.b should be 888
+		}
+
+		fact "works for classes with only double type properties"{
+			val map = newHashMap("a" -> "999", "b" -> "888")
+			val object = subject.create(FieldsDoubleOnly, map) as FieldsDoubleOnly
+			object.a should be 999.0
+			object.b should be 888.0
+		}
+		
+		fact "works for classes with mixed types of properties"{
+			val map = newHashMap(
+				"booleanField" -> "true",
+				"integerField" -> "999",
+				"doubleField" -> "888",
+				"stringField" -> "a from instance"
+			)
+
+			val object = subject.create(FieldsMixed, map) as FieldsMixed
+			object.booleanField should be true
+			object.integerField should be 999
+			object.doubleField should be 888.0
+			object.stringField should be "a from instance"
 		}
 	}
 }

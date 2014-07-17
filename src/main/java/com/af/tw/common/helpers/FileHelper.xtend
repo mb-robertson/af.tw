@@ -65,7 +65,7 @@ class FileHelper {
 	* @Return the URI for the named resource
 	*/
 	package def getResourceUri(String resourceName) {
-		LOG.info("getting URI for: {}", resourceName)
+		LOG.debug("getting URI for: {}", resourceName)
 
 		//this class used as a guaranteed-to-exist reference point
 		this.class.getResource(resourceName).toURI
@@ -76,7 +76,7 @@ class FileHelper {
 	* @Return the File Located associated with that resource name
 	*/
 	def getResourceAsFile(String resourceName) {
-		LOG.info("getting resource: {} as a file", resourceName)
+		LOG.debug("getting resource: {} as a file", resourceName)
 
 		//Filter all resources to ones with requested resource's name
 		var candidateResources = resources.filter [
@@ -107,7 +107,7 @@ class FileHelper {
 				pathSegments = null
 			}
 		}
-		LOG.info("foundCandidate is: {}", foundCandidate)
+		LOG.debug("foundCandidate is: {}", foundCandidate)
 
 		if(foundCandidate.equals(null)) {
 			LOG.error(
@@ -119,7 +119,8 @@ class FileHelper {
 		val foundUri = (File.separator + foundCandidate).resourceUri
 
 		val resourceFile = new File(foundUri)
-		LOG.info("{} was found at: {}", resourceName, resourceFile.canonicalPath)
+		LOG.debug("{} was found at: {}", resourceName, resourceFile.
+			canonicalPath)
 		resourceFile
 
 	}
