@@ -29,15 +29,15 @@ class FileHelper {
 	static var String currentPattern = defaultPattern
 	static var isInitialized = false;
 
-	public new() {
+	new() {
 		this(currentClass, defaultPattern)
 	}
 
-	public new(Class<?> clazz) {
+	new(Class<?> clazz) {
 		this(clazz, defaultPattern)
 	}
 
-	public new(Class<?> clazz, String pattern) {
+	new(Class<?> clazz, String pattern) {
 		LOG.trace("attempting to initialize {}, using path: {}, pattern: {}",
 			this.class, clazz, pattern)
 		if(!isInitialized || !clazz.package.name.equals(currentPackageName) ||
