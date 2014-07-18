@@ -1,10 +1,10 @@
 package com.af.tw.common.helpers
 
-import com.af.tw.resources.testclasses.FieldsStringOnly
-import com.af.tw.resources.testclasses.FieldsBooleanOnly
-import com.af.tw.resources.testclasses.FieldsIntegerOnly
-import com.af.tw.resources.testclasses.FieldsDoubleOnly
-import com.af.tw.resources.testclasses.FieldsMixed
+import com.af.tw.resources.instancepopulator.FieldsStringOnly
+import com.af.tw.resources.instancepopulator.FieldsBooleanOnly
+import com.af.tw.resources.instancepopulator.FieldsIntegerOnly
+import com.af.tw.resources.instancepopulator.FieldsDoubleOnly
+import com.af.tw.resources.instancepopulator.FieldsMixed
 
 describe InstancePopulator {
 	context "populate an object"{

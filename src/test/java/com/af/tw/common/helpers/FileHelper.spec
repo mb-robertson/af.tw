@@ -8,7 +8,7 @@ import undertest.AlternateProjectPath
 describe FileHelper {
 	context "using default FileHelper"{
 		extension FileHelper = new FileHelper
-		val resourcesPath = "/com/af/tw/resources/"
+		val resourcesPath = "/com/af/tw/resources/filehelper/"
 
 		context "when file exists"{
 			val fileName = "fileHelper.txt"

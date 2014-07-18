@@ -1,4 +1,4 @@
-package com.af.tw.resources.testclasses
+package com.af.tw.resources.instancepopulator
 
 class FieldsStringOnly {
 	var String a
