@@ -7,8 +7,8 @@ import com.af.tw.resources.testclasses.FieldsDoubleOnly
 import com.af.tw.resources.testclasses.FieldsMixed
 
 describe InstancePopulator {
-	context "with an object"{
-		fact "works for objects with only String type properties"{
+	context "for an object"{
+		fact "with only String type properties"{
 			val map = newHashMap("a" -> "a from instance", "b" -> "b from instance", "c" -> "c from instance")
 			val object = new FieldsStringOnly
 			object.a should be null
@@ -21,7 +21,7 @@ describe InstancePopulator {
 			object.c should be "c from instance"
 		}
 
-		fact "works for objects with only boolean type properties"{
+		fact "with only boolean type properties"{
 			val map = newHashMap("a" -> "true", "b" -> "false")
 			val object = new FieldsBooleanOnly
 			object.a should be false
@@ -32,7 +32,7 @@ describe InstancePopulator {
 			object.b should be false
 		}
 
-		fact "works for objects with only integer type properties"{
+		fact "with only integer type properties"{
 			val map = newHashMap("a" -> "999", "b" -> "888")
 			val object = new FieldsIntegerOnly
 			object.a should be 0
@@ -43,7 +43,7 @@ describe InstancePopulator {
 			object.b should be 888
 		}
 
-		fact "works for objects with only double type properties"{
+		fact "with only double type properties"{
 			val map = newHashMap("a" -> "999", "b" -> "888")
 			val object = new FieldsDoubleOnly
 			object.a should be 0.0
@@ -54,7 +54,7 @@ describe InstancePopulator {
 			object.b should be 888.0
 		}
 		
-		fact "works for objects with mixed types of properties"{
+		fact "with mixed types of properties"{
 			val map = newHashMap(
 				"booleanField" -> "true",
 				"integerField" -> "999",
@@ -76,8 +76,8 @@ describe InstancePopulator {
 		}
 	}
 	
-	context "with a class"{
-		fact "works for classes with only String type properties"{
+	context "for a class"{
+		fact "with only String type properties"{
 			val map = newHashMap("a" -> "a from class", "b" -> "b from class", "c" -> "c from class")
 
 			val object = subject.create(FieldsStringOnly, map) as FieldsStringOnly
@@ -86,7 +86,7 @@ describe InstancePopulator {
 			object.c should be "c from class"
 		}
 		
-		fact "works for classes with only boolean type properties"{
+		fact "with only boolean type properties"{
 			val map = newHashMap("a" -> "false", "b" -> "true")
 
 			val object = subject.create(FieldsBooleanOnly, map
@@ -95,21 +95,21 @@ describe InstancePopulator {
 			object.b should be true
 		}
 
-		fact "works for classes with only integer type properties"{
+		fact "with only integer type properties"{
 			val map = newHashMap("a" -> "999", "b" -> "888")
 			val object = subject.create(FieldsIntegerOnly, map) as FieldsIntegerOnly
 			object.a should be 999
 			object.b should be 888
 		}
 
-		fact "works for classes with only double type properties"{
+		fact "with only double type properties"{
 			val map = newHashMap("a" -> "999", "b" -> "888")
 			val object = subject.create(FieldsDoubleOnly, map) as FieldsDoubleOnly
 			object.a should be 999.0
 			object.b should be 888.0
 		}
 		
-		fact "works for classes with mixed types of properties"{
+		fact "with mixed types of properties"{
 			val map = newHashMap(
 				"booleanField" -> "true",
 				"integerField" -> "999",
