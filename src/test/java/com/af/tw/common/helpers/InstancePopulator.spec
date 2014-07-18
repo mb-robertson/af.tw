@@ -7,7 +7,7 @@ import com.af.tw.resources.testclasses.FieldsDoubleOnly
 import com.af.tw.resources.testclasses.FieldsMixed
 
 describe InstancePopulator {
-	context "for an object"{
+	context "populate an object"{
 		fact "with only String type properties"{
 			val map = newHashMap("a" -> "a from instance", "b" -> "b from instance", "c" -> "c from instance")
 			val object = new FieldsStringOnly
@@ -76,7 +76,7 @@ describe InstancePopulator {
 		}
 	}
 	
-	context "for a class"{
+	context "populate a new instance from class"{
 		fact "with only String type properties"{
 			val map = newHashMap("a" -> "a from class", "b" -> "b from class", "c" -> "c from class")
 
