@@ -1,9 +1,14 @@
 package com.af.tw.allsuites
 
 import com.af.tw.common.helpers.*
+import com.af.tw.common.settings.impl.*
 
 #Spec Progression
 
 ##common/helpers
 -"FileHelper"
 -"InstancePopulator"
+-"LoggerHelper"
+
+##common/settings
+-"FrameworkSettingsImpl"

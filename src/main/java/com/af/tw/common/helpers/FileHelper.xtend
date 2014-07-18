@@ -37,6 +37,10 @@ class FileHelper {
 		this(clazz, defaultPattern)
 	}
 
+	new(String pattern) {
+		this(currentClass, pattern)
+	}
+
 	new(Class<?> clazz, String pattern) {
 		LOG.trace("attempting to initialize {}, using path: {}, pattern: {}",
 			this.class, clazz, pattern)
@@ -119,8 +123,8 @@ class FileHelper {
 		val foundUri = (File.separator + foundCandidate).resourceUri
 
 		val resourceFile = new File(foundUri)
-		LOG.debug("{} was found at: {}", resourceName, resourceFile.
-			canonicalPath)
+		LOG.debug("{} was found at: {}", resourceName,
+			resourceFile.canonicalPath)
 		resourceFile
 
 	}
