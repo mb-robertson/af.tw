@@ -11,8 +11,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-		<xtend.version>2.5.3</xtend.version>
-		<jnario.version>0.7.5</jnario.version>
+		<xtend.version>2.6.1</xtend.version>
+		<jnario.version>1.0.0</jnario.version>
 	</properties>
 
 	<dependencies>
@@ -20,7 +20,7 @@
 		<dependency>
 
 			<groupId>org.jnario</groupId>
-			<artifactId>org.jnario.lib.maven</artifactId>
+			<artifactId>org.jnario.lib</artifactId>
 			<version>${jnario.version}</version>
 		</dependency>
 		<dependency>
